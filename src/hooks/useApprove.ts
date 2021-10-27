@@ -5,7 +5,6 @@ import { Contract } from '@ethersproject/contracts'
 import { ethers } from 'ethers'
 import BigNumber from 'bignumber.js'
 import { useAppDispatch } from 'state'
-import { updateUserAllowance } from 'state/actions'
 import { approve } from 'utils/callHelpers'
 import { useMasterchef, useMaki, useSousChef, useLotteryContract, useMakiVaultContract } from './useContract'
 import useToast from './useToast'
@@ -29,40 +28,6 @@ export const useApprove = (lpContract: Contract) => {
   }, [lpContract, masterChefContract])
 
   return { onApprove: handleApprove }
-}
-
-// Approve a Pool
-export const useSousApprove = (lpContract: Contract, sousId, earningTokenSymbol) => {
-  const [requestedApproval, setRequestedApproval] = useState(false)
-  const { toastSuccess, toastError } = useToast()
-  const dispatch = useAppDispatch()
-  const { account } = useWeb3React()
-  const sousChefContract = useSousChef(sousId)
-
-  const handleApprove = useCallback(async () => {
-    try {
-      setRequestedApproval(true)
-      const tx = await approve(lpContract, sousChefContract, account)
-      dispatch(updateUserAllowance(sousId, account))
-      if (tx) {
-        toastSuccess(
-          ('Contract Enabled'),
-          // eslint-disable-next-line
-          ('You can now stake in the pool: ' + { symbol: earningTokenSymbol }),
-        )
-        setRequestedApproval(false)
-      } else {
-        // user rejected tx or didn't go thru
-        toastError(('Error'), ('Please try again. Confirm the transaction and make sure you are paying enough gas!'))
-        setRequestedApproval(false)
-      }
-    } catch (e:any) {
-      console.error(e)
-      toastError(('Error'), e?.message)
-    }
-  }, [account, dispatch, lpContract, sousChefContract, sousId, earningTokenSymbol, toastError, toastSuccess])
-
-  return { handleApprove, requestedApproval }
 }
 
 // Approve MAKI auto pool
