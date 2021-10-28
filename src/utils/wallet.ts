@@ -9,7 +9,7 @@ import { nodes } from './getRpcUrl'
  */
 export const setupNetwork = async () => {
   const provider = (window as WindowChain).huobi
-  const { ethereum } = (window as any)
+  const { ethereum } = window as any
   const chainId = parseInt(process.env.REACT_APP_CHAIN_ID, 10)
   if (provider) {
     try {
@@ -36,56 +36,56 @@ export const setupNetwork = async () => {
     }
   } else if (ethereum) {
     try {
-      if (ethereum.chainId !== '0x89' && ethereum.chainId !== '0x13881') {
+      if (ethereum.chainId !== '0x80' && ethereum.chainId !== '0x13881') {
         await ethereum.request({
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: `0x${chainId.toString(16)}`,
-              chainName: 'Huobi Smart Chain Mainnet',
+              chainId: '0x89',
+              chainName: 'Matic Network',
+              rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+              blockExplorerUrls: ['https://polygonscan.com/'],
               nativeCurrency: {
-                name: 'Huobi Token',
-                symbol: 'HT',
+                name: 'Matic Token',
+                symbol: 'MATIC',
                 decimals: 18,
               },
-              rpcUrls: nodes,
-              blockExplorerUrls: [`${BASE_HECO_INFO_URL}/`],
             },
           ],
-        })  
-      } else if (ethereum.chainId === '0x89') {
+        })
+      } else if (ethereum.chainId === '0x80') {
         await ethereum.request({
           method: 'wallet_addEthereumChain',
-          params: [{
-            chainId: "0x89",
-            chainName: "Matic Network",
-            rpcUrls: ["https://rpc-mainnet.maticvigil.com"],
-            blockExplorerUrls :[
-              "https://polygonscan.com/"
-            ],
-            nativeCurrency: {
-              "name": "Matic Token",
-              "symbol": "MATIC",
-              "decimals": 18
-            }
-          }]
+          params: [
+            {
+              chainId: '0x89',
+              chainName: 'Matic Network',
+              rpcUrls: ['https://rpc-mainnet.maticvigil.com'],
+              blockExplorerUrls: ['https://polygonscan.com/'],
+              nativeCurrency: {
+                name: 'Matic Token',
+                symbol: 'MATIC',
+                decimals: 18,
+              },
+            },
+          ],
         })
       } else {
         await ethereum.request({
           method: 'wallet_addEthereumChain',
-          params: [{
-            chainId: "0x13881",
-            chainName: "Mumbai Testnet",
-            rpcUrls: ["https://rpc-mumbai.maticvigil.com"],
-            blockExplorerUrls :[
-              "https://mumbai.polygonscan.com/"
-            ],
-            nativeCurrency: {
-              "name": "Matic Token",
-              "symbol": "MATIC",
-              "decimals": 18
-            }
-          }]
+          params: [
+            {
+              chainId: '0x13881',
+              chainName: 'Mumbai Testnet',
+              rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+              blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+              nativeCurrency: {
+                name: 'Matic Token',
+                symbol: 'MATIC',
+                decimals: 18,
+              },
+            },
+          ],
         })
       }
       return true
@@ -107,7 +107,7 @@ export const setupNetwork = async () => {
  * @param tokenImage
  * @returns {boolean} true if the token has been added, false otherwise
  */
- export const registerToken = async (
+export const registerToken = async (
   tokenAddress: string,
   tokenSymbol: string,
   tokenDecimals: number,
